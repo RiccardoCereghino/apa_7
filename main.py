@@ -8,6 +8,7 @@ con M=5,10,25 e 100. Costruisci un istogramma con le stime ottenute e commenta i
 nell'istogramma occupate da Tr(A) e Tr(A) ± σM (usando per σM uno dei 100 valori calcolati per ogni M). 
 Confronta σ2M con 2 ||A||2F/M. 
 """
+
 def MonteCarloTrace(matrix, M):
     X = [0]
 
@@ -79,10 +80,14 @@ if __name__ == '__main__':
         trace_100.append(trace)
         var_100.append(var)
 
-    print("Varianza stimata con M=(5): {}, frobenius: {}, delta: {}".format(sum(var_5) / 100, frobenius / 5, sum(var_5) / 100 - frobenius / 5))
-    print("Varianza stimata con M=(10): {}, frobenius: {}, delta: {}".format(sum(var_10) / 100, frobenius / 10, sum(var_10) / 100 - frobenius / 10))
-    print("Varianza stimata con M=(25): {}, frobenius: {}, delta: {}".format(sum(var_25) / 100, frobenius / 25, sum(var_25) / 100 - frobenius / 25))
-    print("Varianza stimata con M=(100): {}, frobenius: {}, delta: {}".format(sum(var_100) / 100, frobenius / 100, sum(var_100) / 100 - frobenius / 100))
+    print("Varianza stimata con M=(5): {}, frobenius: {}, delta: {}, trace: {}".format(
+        sum(var_5) / 100, frobenius / 5, sum(var_5) / 100 - frobenius / 5, sum(trace_5) / 100))
+    print("Varianza stimata con M=(10): {}, frobenius: {}, delta: {}, trace: {}".format(
+        sum(var_10) / 100, frobenius / 10, sum(var_10) / 100 - frobenius / 10, sum(trace_10) / 100))
+    print("Varianza stimata con M=(25): {}, frobenius: {}, delta: {}, trace: {}".format(
+        sum(var_25) / 100, frobenius / 25, sum(var_25) / 100 - frobenius / 25, sum(trace_25) / 100))
+    print("Varianza stimata con M=(100): {}, frobenius: {}, delta: {}, trace: {}".format(
+        sum(var_100) / 100, frobenius / 100, sum(var_100) / 100 - frobenius / 100, sum(trace_100) / 100))
 
     weights = np.ones_like(trace_100) / float(len(trace_100))
 
@@ -106,7 +111,6 @@ if __name__ == '__main__':
     plt.axvline(tr - np.sqrt(var_25[0]), color='k', linestyle='dashed', linewidth=1)
     plt.axvline(tr + np.sqrt(var_25[0]), color='k', linestyle='dashed', linewidth=1)
     plt.show()
-
 
     plt.title("100")
     plt.hist(trace_100, weights=weights, color='#E52B50', edgecolor='#FBCEB1', alpha=0.65)
