@@ -11,7 +11,7 @@ Confronta σ2M con 2 ||A||2F/M.
 def MonteCarloTrace(matrix, M):
     X = [0]
 
-    for m in range(1, M + 1):
+    for m in range(1, M):
         # Rademacher
         u = []
         for uu in range(0, len(matrix)):
@@ -22,15 +22,15 @@ def MonteCarloTrace(matrix, M):
         u = np.array(u)
 
         # oracolo
-        X_m = (u.transpose()).dot(A).dot(u)
+        X_m = (u.transpose()) @ matrix @ u
 
         X.append(X[m - 1] + (X_m - X[m - 1]) / m)
 
     sigma_squared = 0
-    for m in range(1, M + 1):
-        sigma_squared += (X[m] - X[M]) ** 2 / (M - 1)
+    for m in range(1, M):
+        sigma_squared += (X[m] - X[M - 1]) ** 2 / (M - 1)
 
-    return X[M], sigma_squared
+    return X[M - 1], sigma_squared
 
 
 # Press the green button in the gutter to run the script.
@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     BT = B.transpose()
 
-    A = BT.dot(B)
+    A = BT @ B
 
     frobenius = 2 * (np.linalg.norm(A) ** 2)
 
@@ -84,26 +84,34 @@ if __name__ == '__main__':
     print("Varianza stimata con M=(25): {}, frobenius: {}, delta: {}".format(sum(var_25) / 100, frobenius / 25, sum(var_25) / 100 - frobenius / 25))
     print("Varianza stimata con M=(100): {}, frobenius: {}, delta: {}".format(sum(var_100) / 100, frobenius / 100, sum(var_100) / 100 - frobenius / 100))
 
-    plt.hist(trace_5, color='#E52B50', edgecolor='#FBCEB1', alpha=0.65)
+    weights = np.ones_like(trace_100) / float(len(trace_100))
+
+    plt.title("5")
+    plt.hist(trace_5, weights=weights, color='#E52B50', edgecolor='#FBCEB1', alpha=0.65)
     plt.axvline(tr, color='k', linestyle='dashed', linewidth=1)
     plt.axvline(tr - np.sqrt(var_5[0]), color='k', linestyle='dashed', linewidth=1)
     plt.axvline(tr + np.sqrt(var_5[0]), color='k', linestyle='dashed', linewidth=1)
     plt.show()
 
-    plt.hist(trace_10, color='#E52B50', edgecolor='#FBCEB1', alpha=0.65)
+    plt.title("10")
+    plt.hist(trace_10, weights=weights, color='#E52B50', edgecolor='#FBCEB1', alpha=0.65)
     plt.axvline(tr, color='k', linestyle='dashed', linewidth=1)
     plt.axvline(tr - np.sqrt(var_10[0]), color='k', linestyle='dashed', linewidth=1)
     plt.axvline(tr + np.sqrt(var_10[0]), color='k', linestyle='dashed', linewidth=1)
     plt.show()
 
-    plt.hist(trace_25, color='#E52B50', edgecolor='#FBCEB1', alpha=0.65)
+    plt.title("25")
+    plt.hist(trace_25, weights=weights, color='#E52B50', edgecolor='#FBCEB1', alpha=0.65)
     plt.axvline(tr, color='k', linestyle='dashed', linewidth=1)
     plt.axvline(tr - np.sqrt(var_25[0]), color='k', linestyle='dashed', linewidth=1)
     plt.axvline(tr + np.sqrt(var_25[0]), color='k', linestyle='dashed', linewidth=1)
     plt.show()
 
-    plt.hist(trace_100, color='#E52B50', edgecolor='#FBCEB1', alpha=0.65)
+
+    plt.title("100")
+    plt.hist(trace_100, weights=weights, color='#E52B50', edgecolor='#FBCEB1', alpha=0.65)
     plt.axvline(tr, color='k', linestyle='dashed', linewidth=1)
     plt.axvline(tr - np.sqrt(var_100[0]), color='k', linestyle='dashed', linewidth=1)
     plt.axvline(tr + np.sqrt(var_100[0]), color='k', linestyle='dashed', linewidth=1)
+
     plt.show()
